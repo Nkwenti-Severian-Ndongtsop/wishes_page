@@ -28,27 +28,17 @@ jobs:
           node-version: 18  # Use the latest LTS version
           cache: npm  # Cache dependencies for faster builds
 
-      # ✅ Step 4: Verify wishes_page Directory
-      - name: Check wishes_page directory exists
-        run: |
-          if [ ! -d "wishes_page" ]; then
-            echo "Error: wishes_page directory not found!"
-            exit 1
-          fi
-
-      # ✅ Step 5: Install Dependencies (Inside wishes_page)
+      # ✅ Step 4: Install Dependencies (At Root)
       - name: Install Dependencies
-        working-directory: wishes_page
         run: npm install
 
-      # ✅ Step 6: Build the Vite App (Inside wishes_page)
+      # ✅ Step 5: Build the Vite App (At Root)
       - name: Build Vite Project
-        working-directory: wishes_page
         run: npm run build
 
-      # ✅ Step 7: Deploy to GitHub Pages
+      # ✅ Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages  # Deploy to 'gh-pages' branch
-          folder: wishes_page/dist  # Deploy built files from 'dist'
+          folder: dist  # Deploy built files from 'dist'
