@@ -1,36 +1,58 @@
-name: Deploy to GitHub Pages
+name: Deploy Women's Day App
 
 on:
   push:
     branches:
-      - main  # Change if using another branch
+      - main
+
+permissions:
+  contents: read
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Allows pushing to `gh-pages`
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false  # Ensures manual authentication works
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Use a stable Node.js version
+          node-version: 18
+          cache: npm
+          cache-dependency-path: wishes_page/women_day/package-lock.json
 
       - name: Install dependencies
         run: npm install
+        working-directory: wishes_page/women_day
 
-      - name: Build the app
+      - name: Build project
         run: npm run build
+        working-directory: wishes_page/women_day
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: wishes_page/women_day/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: wishes_page/women_day/dist
 
       - name: Deploy to GitHub Pages
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Nkwenti-Severian-Ndongtsop/wishes_page.git
-          npx gh-pages -d dist --branch gh-pages --message "Deploy 🚀"
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: wishes_page/women_day/dist
