@@ -3,7 +3,7 @@ name: Deploy Vite App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Deploy when pushing to master
+      - main  # Deploy when pushing to main
 
 permissions:
   contents: write
@@ -24,21 +24,23 @@ jobs:
           node-version: 18  # Use the latest LTS version
           cache: npm  # Cache dependencies for faster builds
 
-      # ✅ Step 3: Install Dependencies
+      # ✅ Step 3: List Repository Files (Debugging)
+      - name: Verify Repository Structure
+        run: ls -lah
+
+      # ✅ Step 4: Install Dependencies (Inside wishes_page)
       - name: Install Dependencies
-        run: |
-          cd wishes_page
-          npm install
+        working-directory: wishes_page
+        run: npm install
 
-      # ✅ Step 4: Build the Vite App
+      # ✅ Step 5: Build the Vite App (Inside wishes_page)
       - name: Build Vite Project
-        run: |
-          cd wishes_page
-          npm run build
+        working-directory: wishes_page
+        run: npm run build
 
-      # ✅ Step 5: Deploy to GitHub Pages
+      # ✅ Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages  # Deploy to 'gh-pages' branch
-          folder: wishes_page/dist  # Deploy the built files from 'dist'
+          folder: wishes_page/dist  # Deploy built files from 'dist'
