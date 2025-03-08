@@ -27,13 +27,13 @@ jobs:
       # ✅ Step 3: Install Dependencies
       - name: Install Dependencies
         run: |
-          cd women_day
+          cd wishes_page
           npm install
 
       # ✅ Step 4: Build the Vite App
       - name: Build Vite Project
         run: |
-          cd women_day
+          cd wishes_page
           npm run build
 
       # ✅ Step 5: Deploy to GitHub Pages
@@ -41,4 +41,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages  # Deploy to 'gh-pages' branch
-          folder: women_day/dist  # Deploy the built files from 'dist'
+          folder: wishes_page/dist  # Deploy the built files from 'dist'
