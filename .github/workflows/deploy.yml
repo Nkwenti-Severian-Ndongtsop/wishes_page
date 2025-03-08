@@ -1,35 +1,36 @@
-name: Deploy Womens Day App
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
-
-permissions:
-  contents: write
+      - main  # Change if using another branch
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allows pushing to `gh-pages`
 
     steps:
-      - name: 🚀 Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # Ensures manual authentication works
 
-      - name: 📦 Install Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: "npm"
+          node-version: '18'  # Use a stable Node.js version
 
-      - name: 📥 Install Dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🔧 Build Project
+      - name: Build the app
         run: npm run build
 
-      - name: 🚀 Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
+      - name: Deploy to GitHub Pages
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Nkwenti-Severian-Ndongtsop/wishes_page.git
+          npx gh-pages -d dist --branch gh-pages --message "Deploy 🚀"
